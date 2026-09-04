@@ -1,0 +1,152 @@
+{
+  "backend/eslint.config.mjs": {
+    "mtime": 1788184345.580575,
+    "seen": 1788280488.0636473,
+    "ast_hash": "069d66f3fd2af0b03d917cf51a1f4c42",
+    "semantic_hash": ""
+  },
+  "backend/nest-cli.json": {
+    "mtime": 1788184345.5818207,
+    "seen": 1788280488.0636535,
+    "ast_hash": "fa439650fa28a1a7aa8c2b6d81c8cc20",
+    "semantic_hash": ""
+  },
+  "backend/package.json": {
+    "mtime": 1788267693.11463,
+    "seen": 1788280488.063656,
+    "ast_hash": "f6e7191fb9fc3a7e2d3236d0908af6e5",
+    "semantic_hash": ""
+  },
+  "backend/src/app.controller.spec.ts": {
+    "mtime": 1788184345.6065638,
+    "seen": 1788280488.0636582,
+    "ast_hash": "e91fed2ee35431d60d1adbf1d5739b83",
+    "semantic_hash": ""
+  },
+  "backend/src/app.controller.ts": {
+    "mtime": 1788184345.5955322,
+    "seen": 1788280488.0636594,
+    "ast_hash": "ae15d1c5a85e6ebfad68b7193766dfb5",
+    "semantic_hash": ""
+  },
+  "backend/src/app.module.ts": {
+    "mtime": 1788280306.0849285,
+    "seen": 1788280488.063661,
+    "ast_hash": "d7f5237f548cc8d4d48a60b0b022fa60",
+    "semantic_hash": ""
+  },
+  "backend/src/app.service.ts": {
+    "mtime": 1788184345.6013608,
+    "seen": 1788280488.0636623,
+    "ast_hash": "08e985e831bca61f6be89c5c2ecef2fa",
+    "semantic_hash": ""
+  },
+  "backend/src/database/data-source.ts": {
+    "mtime": 1788276223.8660295,
+    "seen": 1788280488.0636642,
+    "ast_hash": "3fb5081fae225070601480ffd919ad06",
+    "semantic_hash": ""
+  },
+  "backend/src/database/register-pgvector-type.ts": {
+    "mtime": 1788267636.1105177,
+    "seen": 1788280488.0636654,
+    "ast_hash": "4281eb8cf73febf61edd06ecdc0791a1",
+    "semantic_hash": ""
+  },
+  "backend/src/knowledge/entities/knowledge-chunk.entity.ts": {
+    "mtime": 1788267659.2918775,
+    "seen": 1788280488.0636666,
+    "ast_hash": "77c1c17d8668d175c940764fd2b34766",
+    "semantic_hash": ""
+  },
+  "backend/src/knowledge/entities/knowledge-item.entity.ts": {
+    "mtime": 1788267651.1647878,
+    "seen": 1788280488.0636683,
+    "ast_hash": "71c0ff8e5c44b4782ccf5f15370147bc",
+    "semantic_hash": ""
+  },
+  "backend/src/knowledge/knowledge.controller.ts": {
+    "mtime": 1788267666.7765365,
+    "seen": 1788280488.06367,
+    "ast_hash": "0f4de4673c8b2a534c4e281d46ed0c1e",
+    "semantic_hash": ""
+  },
+  "backend/src/knowledge/knowledge.module.ts": {
+    "mtime": 1788267671.1064386,
+    "seen": 1788280488.0636714,
+    "ast_hash": "806ea7f6c074a84e92b4c14f110889df",
+    "semantic_hash": ""
+  },
+  "backend/src/knowledge/knowledge.service.ts": {
+    "mtime": 1788267663.7193174,
+    "seen": 1788280488.0636728,
+    "ast_hash": "4677814caa4db273c7ebe9f25478b4c3",
+    "semantic_hash": ""
+  },
+  "backend/src/main.ts": {
+    "mtime": 1788184345.6035635,
+    "seen": 1788280488.0636742,
+    "ast_hash": "513b1a8ccb913e8454d526755795b56e",
+    "semantic_hash": ""
+  },
+  "backend/src/migrations/1788220800000-CreateKnowledgeTables.ts": {
+    "mtime": 1788267689.1020007,
+    "seen": 1788280488.0636756,
+    "ast_hash": "666b22b83c8abe894efa67210994288e",
+    "semantic_hash": ""
+  },
+  "backend/test/app.e2e-spec.ts": {
+    "mtime": 1788184345.6076536,
+    "seen": 1788280488.0636768,
+    "ast_hash": "668094bf268e0395763312620e5638e8",
+    "semantic_hash": ""
+  },
+  "backend/tsconfig.build.json": {
+    "mtime": 1788184345.5880852,
+    "seen": 1788280488.0636785,
+    "ast_hash": "d23fc4aff02c91ce9c424c15aea9b49b",
+    "semantic_hash": ""
+  },
+  "backend/tsconfig.json": {
+    "mtime": 1788184345.5895145,
+    "seen": 1788280488.0636795,
+    "ast_hash": "e99b998156dc99eda85378413a794718",
+    "semantic_hash": ""
+  },
+  "knowledge-base/download_and_transcribe.py": {
+    "mtime": 1788262115.4151218,
+    "seen": 1788280488.0636806,
+    "ast_hash": "38ef0d9174b0da6abb755c7c53a6f597",
+    "semantic_hash": ""
+  },
+  "knowledge-base/extract_transcripts.py": {
+    "mtime": 1788185663.9961877,
+    "seen": 1788280488.0636823,
+    "ast_hash": "5a8a41239972f7efceeabac80bae04b6",
+    "semantic_hash": ""
+  },
+  "knowledge-base/kindix_kb_extractor.py": {
+    "mtime": 1788094900.134106,
+    "seen": 1788280488.0636833,
+    "ast_hash": "e5542e7c4686c7fd96411a1967d6d056",
+    "semantic_hash": ""
+  },
+  "CLAUDE.md": {
+    "mtime": 1788266905.5902722,
+    "seen": 1788280488.0636847,
+    "ast_hash": "8908965b1ae7929a729995cfb8c23d35",
+    "semantic_hash": ""
+  },
+  "backend/README.md": {
+    "mtime": 1788184345.5855265,
+    "seen": 1788280488.0636857,
+    "ast_hash": "ad12c0560e2e514d356da443998e8208",
+    "semantic_hash": ""
+  },
+  "infra/docker-compose.yml": {
+    "mtime": 1788278181.5545886,
+    "seen": 1788280488.0636868,
+    "ast_hash": "2022b6553f329a3d47e15e6b8112a5b5",
+    "semantic_hash": ""
+  }
+}

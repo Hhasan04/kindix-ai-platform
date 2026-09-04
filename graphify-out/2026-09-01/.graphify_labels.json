@@ -1,0 +1,19 @@
+{
+  "0": "devDependencies",
+  "1": "KnowledgeChunk",
+  "2": "compilerOptions",
+  "3": "dependencies",
+  "4": "package.json",
+  "5": "app.module.ts",
+  "6": "scripts",
+  "7": "kindix_kb_extractor.py",
+  "8": "README.md",
+  "9": "KINDIX AI Knowledge Platform",
+  "10": "extract_transcripts.py",
+  "11": "exclude",
+  "12": "register-pgvector-type.ts",
+  "13": "download_and_transcribe.py",
+  "14": "nest-cli.json",
+  "15": "CreateKnowledgeTables1788220800000",
+  "16": "eslint.config.mjs"
+}
