@@ -8,6 +8,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ChatModule } from './chat/chat.module';
+import { ConversationModule } from './conversation/conversation.module';
 import { KnowledgeModule } from './knowledge/knowledge.module';
 
 @Module({
@@ -41,6 +42,7 @@ import { KnowledgeModule } from './knowledge/knowledge.module';
     }),
     KnowledgeModule,
     ChatModule,
+    ConversationModule,
   ],
   controllers: [AppController],
   providers: [AppService],
