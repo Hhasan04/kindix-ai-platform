@@ -1,0 +1,120 @@
+{
+  "name": "Escalation",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "messageId"
+            },
+            {
+              "name": "reason"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "7430ee14-8a5b-408c-ba2a-e57791f0d83b",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT conversation_id FROM messages WHERE id = $1",
+        "options": {
+          "queryReplacement": "={{$json.messageId}}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.7,
+      "position": [
+        224,
+        0
+      ],
+      "id": "91383336-7769-4634-a1f2-21ab917e72fc",
+      "name": "Execute a SQL query",
+      "credentials": {
+        "postgres": {
+          "id": "ySdBYqOgHNoPXsMD",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO tickets (id, conversation_id, message_id, reason, status, created_at) VALUES (gen_random_uuid(), $1, $2, $3, 'open', now())",
+        "options": {
+          "queryReplacement": "={{$json.conversation_id}},{{$('When Executed by Another Workflow').item.json.messageId}},{{$('When Executed by Another Workflow').item.json.reason}}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.7,
+      "position": [
+        448,
+        0
+      ],
+      "id": "135ba7e4-4b31-4705-8f28-387370edbb6a",
+      "name": "Execute a SQL query1",
+      "credentials": {
+        "postgres": {
+          "id": "ySdBYqOgHNoPXsMD",
+          "name": "Postgres account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "messageId": "0b85a60a-368c-416e-a518-8c638c3d1d8b",
+          "reason": "negative_feedback"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "7f2832f4-4cac-43d6-9b9d-5350abc3e2fd",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "67f1446557b5a7ea6d89e0127e89d6cf99cf3c10c17c97e6d2d27d4761da8df6"
+  },
+  "nodeGroups": [],
+  "id": "829s5RM19ICTgC6b",
+  "tags": []
+}

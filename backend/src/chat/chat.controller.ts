@@ -24,6 +24,7 @@ export class ChatController {
     answer: string;
     sources: { title: string; sourceUrl: string | null }[];
     sessionId: string;
+    messageId: string;
   }> {
     const query = body?.query?.trim();
     if (!query) {
@@ -39,13 +40,18 @@ export class ChatController {
     const conversation = await this.conversationService.findOrCreate(
       body?.sessionId,
     );
-    await this.conversationService.appendTurn(
+    const { assistantMessageId } = await this.conversationService.appendTurn(
       conversation.id,
       query,
       answer,
       sources,
     );
 
-    return { answer, sources, sessionId: conversation.sessionId };
+    return {
+      answer,
+      sources,
+      sessionId: conversation.sessionId,
+      messageId: assistantMessageId,
+    };
   }
 }

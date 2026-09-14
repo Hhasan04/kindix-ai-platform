@@ -41,13 +41,17 @@ export class ConversationService {
     return { id: created.id, sessionId: created.sessionId };
   }
 
-  /** Inserts the user question, then the assistant answer, for a conversation. */
+  /**
+   * Inserts the user question, then the assistant answer, for a conversation.
+   * Returns the assistant message's id so callers can attach feedback/tickets
+   * to it.
+   */
   async appendTurn(
     conversationId: string,
     question: string,
     answer: string,
     sources: unknown,
-  ): Promise<void> {
+  ): Promise<{ assistantMessageId: string }> {
     await this.messageRepository.save(
       this.messageRepository.create({
         conversation: { id: conversationId } as Conversation,
@@ -56,7 +60,7 @@ export class ConversationService {
         sources: null,
       }),
     );
-    await this.messageRepository.save(
+    const assistantMessage = await this.messageRepository.save(
       this.messageRepository.create({
         conversation: { id: conversationId } as Conversation,
         role: 'assistant',
@@ -64,5 +68,6 @@ export class ConversationService {
         sources,
       }),
     );
+    return { assistantMessageId: assistantMessage.id };
   }
 }
