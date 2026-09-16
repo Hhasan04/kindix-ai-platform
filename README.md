@@ -70,8 +70,8 @@ side-channel, by design (see `docs/DEVELOPER_GUIDE.md` for why).
 ```
 backend/          NestJS API — auth, chat, conversation, knowledge, answer, dashboard modules
 frontend/         Angular app — chat UI, login/register, admin dashboard
-infra/            docker-compose.yml (Postgres, n8n, Adminer, and — once containerized —
-                   the backend, frontend, and embedding service)
+infra/            docker-compose.yml (all 6 services: Postgres, n8n, Adminer, backend,
+                   frontend, embedding service) plus infra/.env for container credentials
 knowledge-base/   KB extraction, transcription, chunking, embedding, and the standalone
                    BGE-M3 embedding_service.py the backend calls at query time
 n8n/              Exported n8n workflows (Collect Feedback, Escalation)

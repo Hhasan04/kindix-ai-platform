@@ -1,0 +1,8 @@
+__pycache__
+*.json
+download_and_transcribe.py
+extract_transcripts.py
+chunk.py
+embed_and_store.py
+kindix_kb_extractor.py
+.git

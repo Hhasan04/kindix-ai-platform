@@ -38,6 +38,52 @@ services:
     depends_on:
       - postgres
 
+  embedding-service:
+    build: ../knowledge-base
+    container_name: kindix-embedding
+    restart: unless-stopped
+    ports:
+      - "8001:8001"
+    volumes:
+      - embedding_cache:/root/.cache/huggingface
+
+  backend:
+    build: ../backend
+    container_name: kindix-backend
+    restart: unless-stopped
+    # Compose only auto-loads a .env file that sits next to THIS compose file
+    # (infra/.env, which holds POSTGRES_*/N8N_*) -- it does not see the
+    # repo-root .env, so GEMINI_API_KEY/GEMINI_MODEL/LLM_PROVIDER/JWT_SECRET
+    # can't be picked up via ${...} substitution here. env_file loads the
+    # root .env's values directly into the container instead; the explicit
+    # `environment:` keys below still win over it for the Docker-network
+    # specific overrides (DB_HOST/DB_PORT/etc).
+    env_file:
+      - ../.env
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      DB_NAME: ${POSTGRES_DB}
+      EMBEDDING_SERVICE_URL: http://embedding-service:8001
+      PORT: 3000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+      - embedding-service
+
+  frontend:
+    build: ../frontend
+    container_name: kindix-frontend
+    restart: unless-stopped
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend
+
 volumes:
   postgres_data:
   n8n_data:
+  embedding_cache:

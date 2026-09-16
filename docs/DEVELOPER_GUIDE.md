@@ -149,11 +149,50 @@ Angular 20, standalone components, routed with `@angular/router`:
 Routes (`app.routes.ts`): `/login`, `/register`, `/` (chat, `schoolGuard`), `/admin`
 (`adminGuard`), everything else redirects to `/`.
 
-The frontend's service files currently hardcode `http://localhost:3000` as the API base (see
-`chat.service.ts`, `auth.service.ts`, `dashboard.service.ts`). That's fine as long as the backend
-is published on the host at port 3000 — including once it's containerized, since the browser
-(where the Angular app actually runs) talks to the host-published port, not the Docker-internal
-network. Don't "fix" this to an internal Docker service name; it would break the browser calls.
+The frontend's service files hardcode `http://localhost:3000` as the API base (see
+`chat.service.ts`, `auth.service.ts`, `dashboard.service.ts`). This stayed correct through
+containerization: the backend is published on host port 3000 by `infra/docker-compose.yml`
+(the `3000:3000` mapping on the `backend` service), and the browser — where the Angular app
+actually runs — talks to that host-published port, not a Docker-internal service name. The
+Docker containerization work deliberately left this alone; don't "fix" it to an internal Docker
+service name like `http://backend:3000`, it would break every call once the page is open in a
+real browser.
+
+## Deployment (`infra/docker-compose.yml`)
+
+The full stack runs as 6 Docker Compose services: `postgres`, `n8n`, `adminer` (unchanged from
+early in the project), plus `backend`, `frontend`, and `embedding-service` (added later, once
+the rest of the product was working). `docker compose -f infra/docker-compose.yml up --build`
+from the repo root brings up all six.
+
+- **`backend/Dockerfile`** — multi-stage: `npm ci` + `nest build` in a build stage, then a clean
+  `node:20-alpine` runtime stage with only `dist/` and production `node_modules`. Migrations are
+  deliberately NOT run on container start (see the comment at the top of the Dockerfile) — run
+  `docker compose exec backend npm run migration:run` manually after the stack is up, so restarts
+  and multi-container scale-out never race a migration against an already-migrated database.
+- **`frontend/Dockerfile`** — multi-stage: `ng build --configuration production` in a build
+  stage, served from `nginx:alpine` in the runtime stage. No API proxy/rewrite in the nginx
+  config — the frontend's hardcoded `http://localhost:3000` calls (see below) don't need one.
+- **`knowledge-base/Dockerfile`** — the embedding service only (`embedding_service.py`), not the
+  offline ingestion scripts (`kindix_kb_extractor.py`, `chunk.py`, `embed_and_store.py` stay
+  scripts you run on your host, not containerized). The BGE-M3 model is NOT baked into the image;
+  it downloads into a named cache volume (`embedding_cache`) on the container's first start, so
+  the ~2GB download only happens once, not on every rebuild.
+
+**Two separate `.env` files** — this trips people up, so it's worth being explicit: Docker
+Compose's project directory defaults to wherever the compose file lives, so it reads
+`infra/.env` (not the repo-root `.env`) for `${...}` substitution inside
+`infra/docker-compose.yml` — that's where `POSTGRES_USER`/`PASSWORD`/`DB` and `N8N_USER`/
+`PASSWORD` live. The `backend` service separately loads the repo-root `.env` via
+`env_file: ../.env` to get `GEMINI_API_KEY`/`GEMINI_MODEL`/`LLM_PROVIDER`/`JWT_SECRET`. Both
+files need to exist and be filled in (`cp .env.example .env` and
+`cp infra/.env.example infra/.env`) — see `docs/INSTALLATION.md` for the full breakdown.
+
+**Docker-internal networking**: the `backend` service's `DB_HOST`/`DB_PORT`/
+`EMBEDDING_SERVICE_URL` are overridden directly in `infra/docker-compose.yml`'s `environment:`
+block to the Docker-internal values (`postgres:5432`, `http://embedding-service:8001`) — these
+win over whatever the repo-root `.env` has for local (non-Docker) dev, so the same `.env` file
+works for both cases without editing.
 
 ## Testing
 

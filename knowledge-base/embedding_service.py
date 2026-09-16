@@ -31,7 +31,10 @@ from pydantic import BaseModel
 from sentence_transformers import SentenceTransformer
 
 MODEL_NAME = "BAAI/bge-m3"
-HOST = "127.0.0.1"
+# 0.0.0.0, not 127.0.0.1: inside the embedding-service container this must
+# accept connections arriving on the Docker network (from the backend
+# container), not just loopback.
+HOST = "0.0.0.0"
 PORT = 8001
 
 print(f"loading {MODEL_NAME} (first run downloads ~2 GB) ...")
