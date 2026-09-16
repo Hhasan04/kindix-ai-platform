@@ -1,7 +1,16 @@
-import { BadRequestException, Body, Controller, Post } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Post,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { KnowledgeService } from '../knowledge/knowledge.service';
 import { AnswerService } from '../answer/answer.service';
 import { ConversationService } from '../conversation/conversation.service';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { JwtPayload } from '../auth/jwt-payload.interface';
 
 /**
  * ChatController — the end-to-end RAG endpoint: retrieve, generate, persist.
@@ -18,7 +27,9 @@ export class ChatController {
   ) {}
 
   @Post('ask')
+  @UseGuards(JwtAuthGuard)
   async ask(
+    @Request() req: { user: JwtPayload },
     @Body() body: { query?: string; sessionId?: string },
   ): Promise<{
     answer: string;
@@ -39,6 +50,7 @@ export class ChatController {
 
     const conversation = await this.conversationService.findOrCreate(
       body?.sessionId,
+      req.user.sub,
     );
     const { assistantMessageId } = await this.conversationService.appendTurn(
       conversation.id,

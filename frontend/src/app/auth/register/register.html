@@ -1,0 +1,50 @@
+<div class="auth-page">
+  <form class="auth-card" (submit)="$event.preventDefault(); submit()">
+    <h1 class="auth-title">KINDIX</h1>
+    <p class="auth-subtitle">Register your school</p>
+
+    <label class="field">
+      <span class="field-label">School name</span>
+      <input type="text" name="schoolName" [(ngModel)]="schoolName" [disabled]="loading" required />
+    </label>
+
+    <label class="field">
+      <span class="field-label">Email</span>
+      <input type="email" name="email" [(ngModel)]="email" [disabled]="loading" required autocomplete="email" />
+    </label>
+
+    <label class="field">
+      <span class="field-label">Phone</span>
+      <input type="tel" name="phone" [(ngModel)]="phone" [disabled]="loading" required />
+    </label>
+
+    <label class="field">
+      <span class="field-label">Country</span>
+      <input type="text" name="country" [(ngModel)]="country" [disabled]="loading" required />
+    </label>
+
+    <label class="field">
+      <span class="field-label">Password</span>
+      <input
+        type="password"
+        name="password"
+        [(ngModel)]="password"
+        [disabled]="loading"
+        required
+        autocomplete="new-password"
+      />
+    </label>
+
+    @if (error) {
+      <div class="auth-error">{{ error }}</div>
+    }
+
+    <button type="submit" class="auth-submit" [disabled]="!canSubmit">
+      {{ loading ? 'Registering…' : 'Register' }}
+    </button>
+
+    <p class="auth-footer">
+      Already have an account? <a routerLink="/login">Sign in</a>
+    </p>
+  </form>
+</div>

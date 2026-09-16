@@ -5,6 +5,8 @@ import { Repository } from 'typeorm';
 import { Conversation } from './entities/conversation.entity';
 import { Message, MessageRole } from './entities/message.entity';
 
+const TITLE_MAX_LENGTH = 40;
+
 /**
  * ConversationService — persistence for chat sessions and their turns.
  * Storage only: no history is read back into generation yet.
@@ -19,16 +21,20 @@ export class ConversationService {
   ) {}
 
   /**
-   * Resolves the conversation for a session, creating one if `sessionId` is
-   * unset or unknown. Generates a new session id when none is given.
+   * Resolves the caller's conversation for a session, creating one if
+   * `sessionId` is unset, unknown, or belongs to a different user. In the
+   * "belongs to someone else" case this silently creates a fresh
+   * conversation rather than throwing — a mismatched owner is treated the
+   * same as an unknown session id, never surfaced as an error.
    */
   async findOrCreate(
-    sessionId?: string,
+    sessionId: string | undefined,
+    userId: string,
   ): Promise<{ id: string; sessionId: string }> {
     const resolvedSessionId = sessionId?.trim() || randomUUID();
 
     const existing = await this.conversationRepository.findOne({
-      where: { sessionId: resolvedSessionId },
+      where: { sessionId: resolvedSessionId, userId },
       order: { createdAt: 'DESC' },
     });
     if (existing) {
@@ -36,7 +42,10 @@ export class ConversationService {
     }
 
     const created = await this.conversationRepository.save(
-      this.conversationRepository.create({ sessionId: resolvedSessionId }),
+      this.conversationRepository.create({
+        sessionId: resolvedSessionId,
+        userId,
+      }),
     );
     return { id: created.id, sessionId: created.sessionId };
   }
@@ -72,10 +81,15 @@ export class ConversationService {
   }
 
   /**
-   * Returns the messages for the conversation matching `sessionId`, ordered
-   * oldest-first, or null if no conversation has that session id.
+   * Returns the messages for the conversation matching `sessionId` and
+   * owned by `userId`, ordered oldest-first, or null either when no such
+   * conversation exists or when it belongs to someone else — the two cases
+   * are indistinguishable to the caller by design.
    */
-  async getHistory(sessionId: string): Promise<
+  async getHistory(
+    sessionId: string,
+    userId: string,
+  ): Promise<
     | {
         id: string;
         role: MessageRole;
@@ -86,7 +100,7 @@ export class ConversationService {
     | null
   > {
     const conversation = await this.conversationRepository.findOne({
-      where: { sessionId },
+      where: { sessionId, userId },
       order: { createdAt: 'DESC' },
     });
     if (!conversation) {
@@ -104,6 +118,49 @@ export class ConversationService {
       content: message.content,
       sources: message.sources,
       createdAt: message.createdAt,
+    }));
+  }
+
+  /**
+   * Lists the caller's conversations, newest-active first. `title` is the
+   * first ~40 characters of the conversation's first user message (empty
+   * when it has none yet); `updatedAt` is its last message's timestamp,
+   * falling back to the conversation's own `createdAt` when it has no
+   * messages.
+   */
+  async listConversations(
+    userId: string,
+  ): Promise<{ sessionId: string; title: string; updatedAt: Date }[]> {
+    const rows = await this.conversationRepository.manager.query<
+      { sessionId: string; title: string; updatedAt: Date }[]
+    >(
+      `
+      SELECT c.session_id                          AS "sessionId",
+             COALESCE(fm.content, '')               AS "title",
+             COALESCE(lm.created_at, c.created_at)  AS "updatedAt"
+      FROM conversations c
+      LEFT JOIN LATERAL (
+        SELECT content FROM messages
+        WHERE conversation_id = c.id AND role = 'user'
+        ORDER BY created_at ASC
+        LIMIT 1
+      ) fm ON TRUE
+      LEFT JOIN LATERAL (
+        SELECT created_at FROM messages
+        WHERE conversation_id = c.id
+        ORDER BY created_at DESC
+        LIMIT 1
+      ) lm ON TRUE
+      WHERE c.user_id = $1
+      ORDER BY "updatedAt" DESC
+      `,
+      [userId],
+    );
+
+    return rows.map((row) => ({
+      sessionId: row.sessionId,
+      title: row.title.slice(0, TITLE_MAX_LENGTH),
+      updatedAt: row.updatedAt,
     }));
   }
 }

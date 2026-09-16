@@ -1,0 +1,128 @@
+.dashboard {
+  min-height: 100vh;
+  font-family: system-ui, sans-serif;
+  background: #f7f7fb;
+  padding: 1.5rem;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.header-brand {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-name {
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: 0.05em;
+  color: #2563eb;
+}
+
+.brand-sub {
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+.logout-btn {
+  padding: 0.5rem 1rem;
+  border: 1px solid #e0e0e6;
+  border-radius: 0.5rem;
+  background: #fff;
+  font: inherit;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  background: #f1f1f4;
+}
+
+.error-banner {
+  margin-bottom: 1rem;
+  padding: 0.6rem 0.9rem;
+  background: #fdecea;
+  color: #b3261e;
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.stat-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 1rem;
+  background: #fff;
+  border: 1px solid #e0e0e6;
+  border-radius: 0.75rem;
+}
+
+.stat-value {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+.section-title {
+  margin: 0 0 0.75rem;
+  font-size: 1.05rem;
+  color: #1a1a1a;
+}
+
+.muted {
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+.tickets-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border: 1px solid #e0e0e6;
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+
+.tickets-table th,
+.tickets-table td {
+  padding: 0.65rem 0.9rem;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e6;
+  font-size: 0.9rem;
+}
+
+.tickets-table tr:last-child td {
+  border-bottom: none;
+}
+
+.resolve-btn {
+  padding: 0.4rem 0.8rem;
+  border: none;
+  border-radius: 0.5rem;
+  background: #2563eb;
+  color: #fff;
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.resolve-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}

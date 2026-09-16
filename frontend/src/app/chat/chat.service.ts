@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 // Talks to the NestJS RAG endpoint and the n8n feedback webhook.
 
@@ -26,9 +27,22 @@ export interface HistoryMessage {
   createdAt: string;
 }
 
+export interface ConversationListEntry {
+  sessionId: string;
+  title: string;
+  updatedAt: number;
+}
+
+interface RawConversationListEntry {
+  sessionId: string;
+  title: string;
+  updatedAt: string;
+}
+
 const ASK_URL = 'http://localhost:3000/chat/ask';
 const FEEDBACK_URL = 'http://localhost:5678/webhook/kindix/feedback';
 const HISTORY_URL = 'http://localhost:3000/conversation/history';
+const CONVERSATION_LIST_URL = 'http://localhost:3000/conversation/list';
 
 @Injectable({ providedIn: 'root' })
 export class ChatService {
@@ -44,5 +58,17 @@ export class ChatService {
 
   getHistory(sessionId: string): Observable<HistoryMessage[]> {
     return this.http.get<HistoryMessage[]>(HISTORY_URL, { params: { sessionId } });
+  }
+
+  getConversationList(): Observable<ConversationListEntry[]> {
+    return this.http.get<RawConversationListEntry[]>(CONVERSATION_LIST_URL).pipe(
+      map((entries) =>
+        entries.map((entry) => ({
+          sessionId: entry.sessionId,
+          title: entry.title,
+          updatedAt: new Date(entry.updatedAt).getTime(),
+        })),
+      ),
+    );
   }
 }

@@ -1,0 +1,84 @@
+<div class="dashboard">
+  <header class="header">
+    <div class="header-brand">
+      <span class="brand-name">KINDIX</span>
+      <span class="brand-sub">Admin dashboard</span>
+    </div>
+    <button type="button" class="logout-btn" (click)="logout()">Log out</button>
+  </header>
+
+  @if (error) {
+    <div class="error-banner">{{ error }}</div>
+  }
+
+  @if (stats) {
+    <section class="stat-cards">
+      <div class="stat-card">
+        <span class="stat-value">{{ stats.feedbackUp }}</span>
+        <span class="stat-label">Feedback 👍</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value">{{ stats.feedbackDown }}</span>
+        <span class="stat-label">Feedback 👎</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value">{{ stats.ticketsOpen }}</span>
+        <span class="stat-label">Tickets open</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value">{{ stats.ticketsResolved }}</span>
+        <span class="stat-label">Tickets resolved</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value">{{ stats.ticketsTotal }}</span>
+        <span class="stat-label">Tickets total</span>
+      </div>
+    </section>
+  }
+
+  <section class="tickets-section">
+    <h2 class="section-title">Open tickets</h2>
+
+    @if (loading) {
+      <p class="muted">Loading…</p>
+    } @else if (!openTickets.length) {
+      <p class="muted">No open tickets.</p>
+    } @else {
+      <table class="tickets-table">
+        <thead>
+          <tr>
+            <th>Reason</th>
+            <th>School</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Country</th>
+            <th>Created</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (ticket of openTickets; track ticket.id) {
+            <tr>
+              <td>{{ ticket.reason }}</td>
+              <td>{{ ticket.school?.schoolName ?? 'Unknown school' }}</td>
+              <td>{{ ticket.school?.email ?? '—' }}</td>
+              <td>{{ ticket.school?.phone ?? '—' }}</td>
+              <td>{{ ticket.school?.country ?? '—' }}</td>
+              <td>{{ ticket.createdAt | date: 'short' }}</td>
+              <td>
+                <button
+                  type="button"
+                  class="resolve-btn"
+                  [disabled]="resolvingId === ticket.id"
+                  (click)="resolve(ticket)"
+                >
+                  {{ resolvingId === ticket.id ? 'Resolving…' : 'Mark Resolved' }}
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </section>
+</div>

@@ -9,6 +9,8 @@
       >☰</button>
 
       <button type="button" class="new-chat-btn" (click)="startNewChat()">+ New chat</button>
+
+      <button type="button" class="logout-btn" (click)="logout()" aria-label="Log out">Log out</button>
     </div>
 
     <div class="chat-list">
@@ -23,6 +25,11 @@
           <span class="chat-time">{{ relativeTime(chat.updatedAt) }}</span>
         </button>
       }
+    </div>
+
+    <div class="sidebar-footer" dir="auto">
+      <span class="sidebar-school-avatar">{{ schoolName.charAt(0).toUpperCase() }}</span>
+      <span class="sidebar-school-name">{{ schoolName }}</span>
     </div>
   </aside>
 

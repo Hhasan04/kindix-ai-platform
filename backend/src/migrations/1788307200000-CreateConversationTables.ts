@@ -9,9 +9,7 @@ import { MigrationInterface, QueryRunner } from 'typeorm';
  *     is jsonb, mirroring AnswerService's `{title, sourceUrl}[]` output and
  *     null for user messages
  */
-export class CreateConversationTables1788307200000
-  implements MigrationInterface
-{
+export class CreateConversationTables1788307200000 implements MigrationInterface {
   name = 'CreateConversationTables1788307200000';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

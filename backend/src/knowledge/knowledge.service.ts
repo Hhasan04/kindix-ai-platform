@@ -50,7 +50,12 @@ export class KnowledgeService {
     // knowledge_chunks.embedding is vector(1024); `<=>` is pgvector cosine
     // distance (0 = identical, 2 = opposite). Lower distance = better match.
     const rows = await this.chunkRepository.manager.query<
-      { content: string; title: string; sourceUrl: string | null; score: string }[]
+      {
+        content: string;
+        title: string;
+        sourceUrl: string | null;
+        score: string;
+      }[]
     >(
       `
       SELECT c.content                          AS content,
@@ -83,7 +88,9 @@ export class KnowledgeService {
         body: JSON.stringify({ text: query }),
       });
     } catch (cause) {
-      this.logger.error(`Embedding service unreachable at ${EMBEDDING_SERVICE_URL}`);
+      this.logger.error(
+        `Embedding service unreachable at ${EMBEDDING_SERVICE_URL}`,
+      );
       throw new InternalServerErrorException('Embedding service unreachable', {
         cause,
       });
@@ -97,7 +104,9 @@ export class KnowledgeService {
 
     const body = (await response.json()) as EmbedResponse;
     if (!Array.isArray(body.embedding) || body.embedding.length === 0) {
-      throw new InternalServerErrorException('Embedding service returned no vector');
+      throw new InternalServerErrorException(
+        'Embedding service returned no vector',
+      );
     }
     return body.embedding;
   }

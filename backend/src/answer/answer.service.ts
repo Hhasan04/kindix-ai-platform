@@ -35,7 +35,7 @@ const answerSchema = z.object({
     .boolean()
     .describe(
       'False if the context blocks did not contain the answer and you are ' +
-        "giving the \"I don't have that information\" reply. True otherwise.",
+        'giving the "I don\'t have that information" reply. True otherwise.',
     ),
 });
 

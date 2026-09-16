@@ -20,7 +20,9 @@ export function getChatModel(config: ConfigService): BaseChatModel {
     case 'google': {
       const apiKey = config.get<string>('GEMINI_API_KEY');
       if (!apiKey) {
-        throw new Error('GEMINI_API_KEY is not set (required for LLM_PROVIDER=google)');
+        throw new Error(
+          'GEMINI_API_KEY is not set (required for LLM_PROVIDER=google)',
+        );
       }
       return new ChatGoogleGenerativeAI({
         apiKey,

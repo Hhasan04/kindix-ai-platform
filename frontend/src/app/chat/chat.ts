@@ -1,7 +1,9 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ChatService, ChatSource, FeedbackRating } from './chat.service';
-import { ChatListEntry, SessionStoreService } from './session-store.service';
+import { Router } from '@angular/router';
+import { ChatService, ChatSource, ConversationListEntry, FeedbackRating } from './chat.service';
+import { SessionStoreService } from './session-store.service';
+import { AuthService } from '../auth/auth.service';
 
 interface ChatMessage {
   id: string;
@@ -28,8 +30,13 @@ export class ChatComponent implements OnInit {
     return this.messages.length > 0;
   }
 
+  protected get schoolName(): string {
+    const payload = this.authService.getPayload();
+    return payload?.schoolName ?? payload?.email ?? '';
+  }
+
   protected messages: ChatMessage[] = [];
-  protected chatList: ChatListEntry[] = [];
+  protected chatList: ConversationListEntry[] = [];
   protected draft = '';
   protected loading = false;
   protected historyLoading = false;
@@ -42,6 +49,8 @@ export class ChatComponent implements OnInit {
   constructor(
     private readonly chatService: ChatService,
     private readonly sessionStore: SessionStoreService,
+    private readonly authService: AuthService,
+    private readonly router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -69,15 +78,12 @@ export class ChatComponent implements OnInit {
 
     if (this.sessionId) {
       this.sessionStore.touchActiveSession(this.sessionId);
-      this.sessionStore.upsertChat(this.sessionId, query);
-      this.refreshChatList();
     }
 
     this.chatService.ask(query, this.sessionId).subscribe({
       next: (res) => {
         this.sessionId = res.sessionId;
         this.sessionStore.touchActiveSession(res.sessionId);
-        this.sessionStore.upsertChat(res.sessionId, query);
         this.refreshChatList();
         this.messages.push({
           id: crypto.randomUUID(),
@@ -126,6 +132,11 @@ export class ChatComponent implements OnInit {
 
   protected toggleSidebar(): void {
     this.sidebarOpen = !this.sidebarOpen;
+  }
+
+  protected logout(): void {
+    this.authService.logout();
+    this.router.navigateByUrl('/login');
   }
 
   protected openChat(sessionId: string): void {
@@ -190,7 +201,10 @@ export class ChatComponent implements OnInit {
   }
 
   private refreshChatList(): void {
-    this.chatList = this.sessionStore.getChats().sort((a, b) => b.updatedAt - a.updatedAt);
+    this.chatService.getConversationList().subscribe({
+      next: (list) => (this.chatList = list),
+      error: () => {},
+    });
   }
 
   private scrollToBottom(behavior: ScrollBehavior = 'smooth'): void {

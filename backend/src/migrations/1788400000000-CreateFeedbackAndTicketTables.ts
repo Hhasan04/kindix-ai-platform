@@ -8,9 +8,7 @@ import { MigrationInterface, QueryRunner } from 'typeorm';
  * tickets  — a flagged conversation (optionally scoped to one message)
  *   raised for human follow-up; also owned entirely by n8n workflows.
  */
-export class CreateFeedbackAndTicketTables1788400000000
-  implements MigrationInterface
-{
+export class CreateFeedbackAndTicketTables1788400000000 implements MigrationInterface {
   name = 'CreateFeedbackAndTicketTables1788400000000';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -53,7 +51,9 @@ export class CreateFeedbackAndTicketTables1788400000000
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`DROP INDEX IF EXISTS "IDX_tickets_conversation_id";`);
+    await queryRunner.query(
+      `DROP INDEX IF EXISTS "IDX_tickets_conversation_id";`,
+    );
     await queryRunner.query(`DROP TABLE IF EXISTS "tickets";`);
     await queryRunner.query(`DROP INDEX IF EXISTS "IDX_feedback_message_id";`);
     await queryRunner.query(`DROP TABLE IF EXISTS "feedback";`);

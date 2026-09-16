@@ -7,8 +7,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AuthModule } from './auth/auth.module';
 import { ChatModule } from './chat/chat.module';
 import { ConversationModule } from './conversation/conversation.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 import { KnowledgeModule } from './knowledge/knowledge.module';
 
 @Module({
@@ -43,6 +45,8 @@ import { KnowledgeModule } from './knowledge/knowledge.module';
     KnowledgeModule,
     ChatModule,
     ConversationModule,
+    AuthModule,
+    DashboardModule,
   ],
   controllers: [AppController],
   providers: [AppService],

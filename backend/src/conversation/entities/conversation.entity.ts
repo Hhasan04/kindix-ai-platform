@@ -1,5 +1,14 @@
-import { Column, Entity, Index, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Message } from './message.entity';
+import { User } from '../../auth/entities/user.entity';
 
 /**
  * Conversation — one chat session, grouping the user/assistant turns
@@ -15,6 +24,14 @@ export class Conversation {
   @Index()
   @Column({ type: 'text', name: 'session_id' })
   sessionId: string;
+
+  /** Owning user, null for conversations created before auth existed. */
+  @Column({ type: 'uuid', name: 'user_id', nullable: true })
+  userId: string | null;
+
+  @ManyToOne(() => User, { nullable: true, onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'user_id' })
+  user: User | null;
 
   @Column({ type: 'timestamptz', name: 'created_at', default: () => 'now()' })
   createdAt: Date;
