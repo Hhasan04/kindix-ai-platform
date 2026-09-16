@@ -1,0 +1,136 @@
+<div class="layout">
+  <aside class="sidebar" [class.collapsed]="!sidebarOpen">
+    <div class="sidebar-top-row">
+      <button
+        type="button"
+        class="sidebar-toggle-btn"
+        (click)="toggleSidebar()"
+        [attr.aria-label]="sidebarOpen ? 'Close sidebar' : 'Open sidebar'"
+      >☰</button>
+
+      <button type="button" class="new-chat-btn" (click)="startNewChat()">+ New chat</button>
+    </div>
+
+    <div class="chat-list">
+      @for (chat of chatList; track chat.sessionId) {
+        <button
+          type="button"
+          class="chat-list-item"
+          [class.active]="chat.sessionId === sessionId"
+          (click)="openChat(chat.sessionId)"
+        >
+          <span class="chat-title" dir="auto">{{ chat.title }}</span>
+          <span class="chat-time">{{ relativeTime(chat.updatedAt) }}</span>
+        </button>
+      }
+    </div>
+  </aside>
+
+  <div class="chat">
+    <header class="header">
+      <div class="header-brand" dir="ltr">
+        <div class="header-brand-row">
+          @if (!logoFailed) {
+            <img class="logo-img" src="assets/logo.png" alt="KINDIX" (error)="logoFailed = true" />
+          }
+          <span class="brand-name">KINDIX</span>
+        </div>
+        <p class="tagline">Educational Intelligence — Answers You Can Trust.</p>
+      </div>
+    </header>
+
+    @if (hasMessages) {
+      <div class="messages" #messagesEl>
+        @for (message of messages; track message.id) {
+          <div class="row" [class.row-user]="message.role === 'user'" [class.row-assistant]="message.role === 'assistant'">
+            <div class="bubble" [class.bubble-user]="message.role === 'user'" [class.bubble-assistant]="message.role === 'assistant'" dir="auto">
+              <p class="text">{{ message.text }}</p>
+
+              @if (message.sources && message.sources.length) {
+                <ul class="sources">
+                  @for (source of message.sources; track source.sourceUrl ?? source.title) {
+                    <li>
+                      @if (source.sourceUrl) {
+                        <a [href]="source.sourceUrl" target="_blank" rel="noopener noreferrer">{{ source.title }}</a>
+                      } @else {
+                        <span>{{ source.title }}</span>
+                      }
+                    </li>
+                  }
+                </ul>
+              }
+
+              @if (message.role === 'assistant') {
+                <div class="feedback">
+                  <button
+                    type="button"
+                    class="feedback-btn"
+                    [class.active]="message.feedback === 'up'"
+                    [disabled]="message.feedbackPending"
+                    (click)="rate(message, 'up')"
+                    aria-label="Good answer"
+                  >👍</button>
+                  <button
+                    type="button"
+                    class="feedback-btn"
+                    [class.active]="message.feedback === 'down'"
+                    [disabled]="message.feedbackPending"
+                    (click)="rate(message, 'down')"
+                    aria-label="Bad answer"
+                  >👎</button>
+                  @if (message.feedbackError) {
+                    <span class="feedback-error">Couldn't send feedback</span>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        }
+
+        @if (loading) {
+          <div class="row row-assistant">
+            <div class="bubble bubble-assistant bubble-loading" aria-label="Thinking">
+              <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+            </div>
+          </div>
+        }
+      </div>
+
+      @if (error) {
+        <div class="error-banner">{{ error }}</div>
+      }
+
+      <form class="composer" (submit)="$event.preventDefault(); send()">
+        <textarea
+          class="composer-input"
+          dir="auto"
+          rows="1"
+          placeholder="Ask a question…"
+          [(ngModel)]="draft"
+          name="draft"
+          (keydown)="onInputKeydown($event)"
+          [disabled]="loading || historyLoading"
+        ></textarea>
+        <button type="submit" class="send-btn" [disabled]="loading || historyLoading || !draft.trim()">Send</button>
+      </form>
+    } @else {
+      <div class="empty-state">
+        <h1 class="empty-heading">أهلاً بك! كيف يمكنني مساعدتك اليوم؟</h1>
+
+        <form class="composer" (submit)="$event.preventDefault(); send()">
+          <textarea
+            class="composer-input"
+            dir="auto"
+            rows="1"
+            placeholder="Ask a question…"
+            [(ngModel)]="draft"
+            name="draft"
+            (keydown)="onInputKeydown($event)"
+            [disabled]="loading || historyLoading"
+          ></textarea>
+          <button type="submit" class="send-btn" [disabled]="loading || historyLoading || !draft.trim()">Send</button>
+        </form>
+      </div>
+    }
+  </div>
+</div>

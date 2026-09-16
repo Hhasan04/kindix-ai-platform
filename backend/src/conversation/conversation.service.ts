@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Conversation } from './entities/conversation.entity';
-import { Message } from './entities/message.entity';
+import { Message, MessageRole } from './entities/message.entity';
 
 /**
  * ConversationService — persistence for chat sessions and their turns.
@@ -69,5 +69,41 @@ export class ConversationService {
       }),
     );
     return { assistantMessageId: assistantMessage.id };
+  }
+
+  /**
+   * Returns the messages for the conversation matching `sessionId`, ordered
+   * oldest-first, or null if no conversation has that session id.
+   */
+  async getHistory(sessionId: string): Promise<
+    | {
+        id: string;
+        role: MessageRole;
+        content: string;
+        sources: unknown | null;
+        createdAt: Date;
+      }[]
+    | null
+  > {
+    const conversation = await this.conversationRepository.findOne({
+      where: { sessionId },
+      order: { createdAt: 'DESC' },
+    });
+    if (!conversation) {
+      return null;
+    }
+
+    const messages = await this.messageRepository.find({
+      where: { conversation: { id: conversation.id } },
+      order: { createdAt: 'ASC' },
+    });
+
+    return messages.map((message) => ({
+      id: message.id,
+      role: message.role,
+      content: message.content,
+      sources: message.sources,
+      createdAt: message.createdAt,
+    }));
   }
 }

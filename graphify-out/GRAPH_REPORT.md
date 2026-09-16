@@ -1,16 +1,16 @@
-# Graph Report - kindix-ai-platform  (2026-09-07)
+# Graph Report - kindix-ai-platform  (2026-09-14)
 
 ## Corpus Check
-- 42 files · ~85,431 words
+- 48 files · ~86,231 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 317 nodes · 394 edges · 22 communities (21 shown, 1 thin omitted)
-- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 4 edges (avg confidence: 0.8)
+- 350 nodes · 447 edges · 24 communities (21 shown, 3 thin omitted)
+- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 6 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `a8b5f477`
+- Built from commit: `f045390d`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -35,27 +35,32 @@
 - embed_and_store.py
 - embed
 - answer.service.ts
+- Message
+- CreateConversationTables1788307200000
+- CreateFeedbackAndTicketTables1788400000000
 
 ## God Nodes (most connected - your core abstractions)
 1. `compilerOptions` - 22 edges
 2. `scripts` - 17 edges
-3. `KnowledgeChunk` - 12 edges
-4. `KnowledgeItem` - 10 edges
-5. `KnowledgeService` - 10 edges
-6. `AnswerService` - 9 edges
-7. `KINDIX AI Knowledge Platform` - 9 edges
-8. `jest` - 8 edges
-9. `AppService` - 7 edges
-10. `SearchResult` - 7 edges
+3. `Message` - 12 edges
+4. `KnowledgeChunk` - 12 edges
+5. `Conversation` - 11 edges
+6. `KnowledgeItem` - 10 edges
+7. `KnowledgeService` - 10 edges
+8. `AnswerService` - 9 edges
+9. `KINDIX AI Knowledge Platform` - 9 edges
+10. `jest` - 8 edges
 
 ## Surprising Connections (you probably didn't know these)
+- `Conversation` --references--> `Message`  [EXTRACTED]
+  backend/src/conversation/entities/conversation.entity.ts → backend/src/conversation/entities/message.entity.ts
 - `KnowledgeChunk` --references--> `KnowledgeItem`  [EXTRACTED]
   backend/src/knowledge/entities/knowledge-chunk.entity.ts → backend/src/knowledge/entities/knowledge-item.entity.ts
 
 ## Import Cycles
 - None detected.
 
-## Communities (22 total, 1 thin omitted)
+## Communities (24 total, 3 thin omitted)
 
 ### Community 0 - "devDependencies"
 Cohesion: 0.04
@@ -63,7 +68,7 @@ Nodes (47): devDependencies, eslint, eslint-config-prettier, @eslint/eslintrc, @
 
 ### Community 1 - "KnowledgeChunk"
 Cohesion: 0.11
-Nodes (20): KnowledgeChunk, Column, Entity, PrimaryGeneratedColumn, KnowledgeItem, Column, Entity, PrimaryGeneratedColumn (+12 more)
+Nodes (20): KnowledgeChunk, Column, Entity, Index, JoinColumn, ManyToOne, PrimaryGeneratedColumn, KnowledgeItem (+12 more)
 
 ### Community 2 - "compilerOptions"
 Cohesion: 0.09
@@ -78,8 +83,8 @@ Cohesion: 0.10
 Nodes (19): author, description, jest, collectCoverageFrom, coverageDirectory, moduleFileExtensions, rootDir, testEnvironment (+11 more)
 
 ### Community 5 - "app.module.ts"
-Cohesion: 0.15
-Nodes (11): AppController, Controller, AppModule, Module, AppService, Injectable, ChatModule, Module (+3 more)
+Cohesion: 0.12
+Nodes (15): AnswerModule, Module, AppController, Controller, AppModule, Module, AppService, Injectable (+7 more)
 
 ### Community 6 - "scripts"
 Cohesion: 0.12
@@ -131,24 +136,28 @@ Nodes (5): BaseModel, embed(), EmbedRequest, EmbedResponse, post
 
 ### Community 20 - "answer.service.ts"
 Cohesion: 0.13
-Nodes (13): AnswerModule, Module, answerSchema, AnswerService, HUMAN_PROMPT, SYSTEM_PROMPT, Injectable, getChatModel() (+5 more)
+Nodes (13): answerSchema, AnswerService, HUMAN_PROMPT, SYSTEM_PROMPT, Injectable, getChatModel(), ChatController, Body (+5 more)
+
+### Community 21 - "Message"
+Cohesion: 0.16
+Nodes (15): InjectRepository, Conversation, Column, Entity, Index, OneToMany, PrimaryGeneratedColumn, Message (+7 more)
 
 ## Knowledge Gaps
-- **123 isolated node(s):** `$schema`, `collection`, `sourceRoot`, `deleteOutDir`, `name` (+118 more)
+- **124 isolated node(s):** `$schema`, `collection`, `sourceRoot`, `deleteOutDir`, `name` (+119 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **1 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **3 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `devDependencies` connect `devDependencies` to `package.json`?**
-  _High betweenness centrality (0.081) - this node is a cross-community bridge._
+  _High betweenness centrality (0.067) - this node is a cross-community bridge._
 - **Why does `dependencies` connect `dependencies` to `package.json`?**
-  _High betweenness centrality (0.055) - this node is a cross-community bridge._
+  _High betweenness centrality (0.045) - this node is a cross-community bridge._
 - **Why does `scripts` connect `scripts` to `package.json`?**
-  _High betweenness centrality (0.033) - this node is a cross-community bridge._
+  _High betweenness centrality (0.027) - this node is a cross-community bridge._
 - **What connects `$schema`, `collection`, `sourceRoot` to the rest of the system?**
-  _123 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _124 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `devDependencies` be split into smaller, more focused modules?**
   _Cohesion score 0.0425531914893617 - nodes in this community are weakly interconnected._
 - **Should `KnowledgeChunk` be split into smaller, more focused modules?**
