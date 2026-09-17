@@ -42,9 +42,9 @@ generate → store. In practice, most of that logic (embedding the query, runnin
 search, calling Gemini with structured output, persisting the turn) is naturally one cohesive
 NestJS request handler — moving it into n8n would mean re-implementing typed request/response
 handling, error propagation, and the LangChain integration inside n8n's HTTP/Function nodes for
-no real benefit, in a 3-week sprint. n8n earns its place where it actually fits the tool: a
-webhook-triggered side-effect chain (write feedback → conditionally trigger a second workflow →
-write a ticket) that doesn't need to block the chat response.
+no real benefit. n8n earns its place where it actually fits the tool: a webhook-triggered
+side-effect chain (write feedback → conditionally trigger a second workflow → write a ticket)
+that doesn't need to block the chat response.
 
 ## Backend modules (`backend/src/`)
 
@@ -94,11 +94,11 @@ LIMIT $2
 `<=>` is pgvector's cosine-distance operator; `score` is reported as `1 - distance` so higher is
 better.
 
-## Role model: `school` / `admin` (not the original Admin/Support/Employee spec)
+## Role model: `school` / `admin` (not a generic Admin/Support/Employee spec)
 
-The original 3-month plan assumed internal company roles (Admin/Support/Employee) using the
-chatbot. In reality, KINDIX's actual users are the **schools subscribed to the KINDIX service** —
-they're the ones who need answers about the product. So the role model was adapted:
+The original plan assumed internal company roles (Admin/Support/Employee) using the chatbot. In
+reality, KINDIX's actual users are the **schools subscribed to the KINDIX service** — they're the
+ones who need answers about the product. So the role model was adapted:
 
 - **`school`** — self-registers via `POST /auth/register` with `schoolName`, `email`, `phone`,
   `country`, `password`. Uses the chat. Can only see their own conversations
@@ -197,7 +197,7 @@ works for both cases without editing.
 ## Testing
 
 - `backend/`: Jest unit tests (`npm run test`), e2e scaffold (`npm run test:e2e`) — coverage is
-  thin; the 3-week timeline prioritized the working pipeline over exhaustive unit tests.
+  thin; the working pipeline was prioritized over exhaustive unit tests.
 - End-to-end / answer-quality testing: `testing/kindix-test-set-50.csv` — 51 questions grounded in
   real KINDIX content (28 from an internal Eval-module FAQ, 23 derived from real knowledge-base
   article transcripts across the other KB categories). Columns are pre-built for manually logging

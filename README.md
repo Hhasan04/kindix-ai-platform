@@ -6,9 +6,6 @@ digging through support articles.
 
 **Educational Intelligence — Answers You Can Trust.**
 
-Built end-to-end during a compressed 3-week internship sprint against an original 3-month project
-plan (see `docs/DEVELOPER_GUIDE.md` for what that trade-off meant in practice).
-
 ## What it does
 
 A school-account user opens the chat, asks a question in Arabic or English, and the system:
@@ -90,17 +87,17 @@ docs/             This documentation set
 ## Known limitations (reported honestly, not swept under the rug)
 
 - The knowledge base currently holds **~141 real articles / ~192 chunks** extracted and
-  transcribed from KINDIX's actual support content — well short of the original plan's
-  1000+ KPI target, because that target assumed a much larger existing support library than
-  KINDIX actually has today. What's there is real, grounded content, not filler.
+  transcribed from KINDIX's actual support content — smaller than the 1000+ item KPI target,
+  because that target assumed a much larger existing support library than KINDIX actually has
+  today. What's there is real, grounded content, not filler.
 - The RAG pipeline is single-turn: each answer is generated from the current question alone,
   without the prior turns in the same conversation being fed back into the prompt. Conversation
   history is stored and shown in the UI, but doesn't yet influence generation.
 - n8n's escalation workflow creates a ticket but the "notify support team" step is a placeholder
   — no email/Slack notification is wired up yet.
-- Roles are `school` and `admin` (not the original plan's Admin/Support/Employee three-way
-  split) — schools are KINDIX's actual customers and the only real chat users, so the role model
-  was adapted to match reality rather than the original spec. See `docs/DEVELOPER_GUIDE.md`.
+- Roles are `school` and `admin` (not a generic Admin/Support/Employee split) — schools are
+  KINDIX's actual customers and the only real chat users, so the role model matches how KINDIX
+  actually operates. See `docs/DEVELOPER_GUIDE.md`.
 
 ## License / ownership
 

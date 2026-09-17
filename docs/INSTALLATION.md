@@ -74,10 +74,22 @@ This creates all tables: `users`, `conversations`, `messages`, `knowledge_items`
 
 ## 4. Load the knowledge base
 
-The knowledge base is built by an offline pipeline, not by the backend, and isn't part of the
-container build. `knowledge-base/chunks.json` and `articles_enriched.json` already committed to
-the repo are the real, already-extracted KINDIX content, so most of the time you can go straight
-to the last step:
+**The embeddings themselves are not in git.** A pgvector database lives inside the `postgres`
+container's Docker volume on whoever's machine ran it — that's local, generated state, not
+something a repo ships. What IS committed to git is the real, already-extracted, already-chunked
+KINDIX content that the embeddings are generated FROM:
+`knowledge-base/chunks.json` (the real chunk text) and `articles_enriched.json` (the source
+articles, including video transcripts). Anyone who clones this repo gets those for free.
+
+To turn that committed text into actual vectors in their own database, they run
+`embed_and_store.py` once — it re-embeds `chunks.json` locally with BGE-M3 (no API key, no cost,
+and the model is deterministic, so the vectors it produces are the same ones already in Hasan's
+database, not an approximation) and inserts them into their own Postgres. So a fresh clone + one
+script run reproduces the exact same knowledge base — it just isn't shipped as a database dump.
+
+Most of the time you can skip straight to that last step, since the committed `chunks.json`/
+`articles_enriched.json` are already the real content — you only need the earlier extraction
+steps if you're refreshing the source data itself (e.g. new KINDIX support articles):
 
 ```bash
 cd knowledge-base
